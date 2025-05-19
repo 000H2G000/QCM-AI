@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CCNA Helper - My Notes</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .note-item {
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+    .note-item:last-child {
+      border-bottom: none;
+    }
+    .note-url {
+      color: #3498db;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+    .note-timestamp {
+      color: #7f8c8d;
+      font-size: 0.8em;
+    }
+    .note-content {
+      margin: 10px 0;
+    }
+    .term-tag {
+      display: inline-block;
+      background-color: #e1f5fe;
+      color: #0277bd;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin: 2px;
+      font-size: 0.9em;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 30px;
+      color: #7f8c8d;
+    }
+    .controls {
+      text-align: center;
+      margin-top: 20px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin: 0 5px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    button.danger {
+      background-color: #e74c3c;
+    }
+    button.danger:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CCNA Helper - My Notes</h1>
+    <div id="notes-container">
+      <div class="empty-state">Loading notes...</div>
+    </div>
+    <div class="controls">
+      <button id="exportBtn">Export Notes</button>
+      <button id="clearBtn" class="danger">Clear All Notes</button>
+    </div>
+  </div>
+
+  <script>
+    // Load notes when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const notesContainer = document.getElementById('notes-container');
+      const exportBtn = document.getElementById('exportBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      
+      // Load notes from storage
+      chrome.runtime.sendMessage({action: 'getData'}, function(response) {
+        if (response && response.success && response.data && response.data.length > 0) {
+          displayNotes(response.data);
+        } else {
+          notesContainer.innerHTML = `
+            <div class="empty-state">
+              <p>No notes found. Start scanning pages to collect CCNA terms.</p>
+            </div>
+          `;
+        }
+      });
+      
+      // Function to display notes
+      function displayNotes(notes) {
+        notesContainer.innerHTML = '';
+        
+        notes.forEach(note => {
+          const noteElement = document.createElement('div');
+          noteElement.className = 'note-item';
+          
+          const date = new Date(note.timestamp);
+          const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+          
+          let termsHtml = '';
+          if (Array.isArray(note.content)) {
+            termsHtml = note.content.map(term => 
+              `<span class="term-tag">${term}</span>`
+            ).join(' ');
+          } else {
+            termsHtml = `<p>${note.content}</p>`;
+          }
+          
+          noteElement.innerHTML = `
+            <div class="note-url">
+              <a href="${note.url}" target="_blank">${note.url}</a>
+            </div>
+            <div class="note-timestamp">
+              ${formattedDate}
+            </div>
+            <div class="note-content">
+              ${termsHtml}
+            </div>
+          `;
+          
+          notesContainer.appendChild(noteElement);
+        });
+      }
+      
+      // Export functionality
+      exportBtn.addEventListener('click', function() {
+        chrome.runtime.sendMessage({action: 'getData'}, function(response) {
+          if (response && response.success && response.data) {
+            const dataStr = JSON.stringify(response.data, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'ccna-notes.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+          }
+        });
+      });
+      
+      // Clear notes functionality
+      clearBtn.addEventListener('click', function() {
+        if (confirm('Are you sure you want to clear all notes? This cannot be undone.')) {
+          chrome.storage.local.remove(['ccnaNotes'], function() {
+            notesContainer.innerHTML = `
+              <div class="empty-state">
+                <p>All notes have been cleared.</p>
+              </div>
+            `;
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

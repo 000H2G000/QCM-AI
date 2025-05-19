@@ -1,0 +1,87 @@
+How to Package and Share Your QCM Helper Extension
+
+1. PACKAGING THE EXTENSION
+
+Method 1: Using Windows Explorer
+-------------------------------
+1. Create a new folder named "qcm-helper-extension"
+2. Copy the following files into this folder:
+   - manifest.json
+   - background.js
+   - content.js
+   - popup.html
+   - popup.js
+   - history.html
+   - notes.html
+   - README.md
+3. Create an "assets" subfolder and copy these files:
+   - assets/icon16.png
+   - assets/icon48.png
+   - assets/icon128.png
+4. Select all files and folders in the "qcm-helper-extension" folder
+5. Right-click and select "Send to" > "Compressed (zipped) folder"
+6. Name the zip file "qcm-helper-extension.zip"
+
+Method 2: Using PowerShell (Advanced)
+------------------------------------
+1. Open PowerShell and navigate to your extension directory
+2. Run the following commands:
+
+```powershell
+# Create a temp directory
+$tempDir = ".\qcm-helper-extension"
+if (Test-Path $tempDir) { Remove-Item -Recurse -Force $tempDir }
+New-Item -ItemType Directory -Path $tempDir | Out-Null
+New-Item -ItemType Directory -Path "$tempDir\assets" | Out-Null
+
+# Copy files
+Copy-Item manifest.json, background.js, content.js, popup.html, popup.js, history.html, notes.html, README.md $tempDir
+Copy-Item assets\icon16.png, assets\icon48.png, assets\icon128.png "$tempDir\assets"
+
+# Create zip file (PowerShell 5.0 and later)
+Compress-Archive -Path "$tempDir\*" -DestinationPath "qcm-helper-extension.zip" -Force
+
+# Clean up
+Remove-Item -Recurse -Force $tempDir
+```
+
+2. SHARING THE EXTENSION
+
+Option 1: Share the ZIP file directly
+------------------------------------
+1. Share the "qcm-helper-extension.zip" file via email, file sharing services, or USB drive
+2. Include the README.md file or these installation instructions:
+
+   Installation Instructions:
+   a. Extract the zip file to a folder
+   b. Open Chrome or Edge and go to extensions page:
+      - Chrome: chrome://extensions/
+      - Edge: edge://extensions/
+   c. Enable "Developer mode" (toggle in the top-right)
+   d. Click "Load unpacked" and select the extracted folder
+   e. The extension should now be installed and ready to use
+
+Option 2: Publish to Chrome Web Store (For Wider Distribution)
+-----------------------------------------------------------
+1. Create a developer account at the Chrome Web Store (one-time $5 fee)
+   - https://chrome.google.com/webstore/devconsole/
+
+2. Prepare store listing materials:
+   - Extension icon (128x128 PNG)
+   - At least 1-3 screenshots (1280x800 or 640x400)
+   - Short description (up to 132 characters)
+   - Detailed description
+   - Privacy policy URL (can be a GitHub gist)
+
+3. Submit your extension:
+   a. Go to the Chrome Developer Dashboard
+   b. Click "New Item" and upload your zip file
+   c. Fill in the store listing information
+   d. Submit for review (typically takes 2-3 business days)
+
+4. Once approved, share your Chrome Web Store listing URL with others
+
+Notes:
+- Users will still see the "Developer mode extensions" warning when using the directly shared zip file
+- Publishing to Chrome Web Store provides the most professional and trustworthy distribution method
+- Make sure you have properly documented the extension's functionality in the README.md file 

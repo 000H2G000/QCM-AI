@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QCM Helper Test Page</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+    }
+    .card {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .instructions {
+      background-color: #e8f4fc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+    .question {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .options {
+      margin-left: 20px;
+    }
+    .option {
+      margin-bottom: 10px;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #3498db;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 4px;
+      text-decoration: none;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #2980b9;
+    }
+    .debug-log {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      margin-top: 30px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>QCM Helper Test Page</h1>
+  
+  <div class="instructions">
+    <h3>How to test the extension:</h3>
+    <ol>
+      <li>Make sure the extension is installed and enabled</li>
+      <li>Select one of the questions below (including the question and all options)</li>
+      <li>Right-click on the selected text</li>
+      <li>Click on "Answer question" in the context menu</li>
+      <li>The extension should show a notification and then display the answer</li>
+    </ol>
+  </div>
+  
+  <div class="card">
+    <h2>Sample Questions</h2>
+    
+    <div class="question">
+      <p><strong>Question 1:</strong> What is the capital of France?</p>
+      <div class="options">
+        <div class="option">A) London</div>
+        <div class="option">B) Berlin</div>
+        <div class="option">C) Paris</div>
+        <div class="option">D) Madrid</div>
+      </div>
+    </div>
+    
+    <div class="question">
+      <p><strong>Question 2:</strong> Which of the following is the largest planet in our solar system?</p>
+      <div class="options">
+        <div class="option">A) Mars</div>
+        <div class="option">B) Jupiter</div>
+        <div class="option">C) Saturn</div>
+        <div class="option">D) Earth</div>
+      </div>
+    </div>
+    
+    <div class="question">
+      <p><strong>Question 3:</strong> In networking, what does IP stand for?</p>
+      <div class="options">
+        <div class="option">A) Internet Protocol</div>
+        <div class="option">B) Interface Port</div>
+        <div class="option">C) Internal Processor</div>
+        <div class="option">D) Information Pathway</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Extension Status</h2>
+    <p>Use this section to check if the extension is properly loaded and functioning.</p>
+    <button id="checkStatus" class="btn">Check Extension Status</button>
+    <div id="statusResult"></div>
+  </div>
+  
+  <div class="debug-log" id="debugLog">
+    <div>Waiting for extension interactions...</div>
+  </div>
+  
+  <script>
+    document.getElementById('checkStatus').addEventListener('click', function() {
+      const status = document.getElementById('statusResult');
+      const debugLog = document.getElementById('debugLog');
+      
+      // Function to add debug entry
+      function addDebugEntry(message) {
+        const entry = document.createElement('div');
+        entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        debugLog.appendChild(entry);
+        debugLog.scrollTop = debugLog.scrollHeight;
+      }
+      
+      // Try to detect if the extension is running
+      addDebugEntry('Checking for extension...');
+      
+      try {
+        // Check if chrome.runtime is available (indicating we're in an extension)
+        if (typeof chrome !== 'undefined' && chrome.runtime) {
+          addDebugEntry('Chrome extension API detected!');
+          
+          // Try to ping the extension
+          try {
+            chrome.runtime.sendMessage({action: 'ping'}, function(response) {
+              if (chrome.runtime.lastError) {
+                addDebugEntry(`Error: ${chrome.runtime.lastError.message}`);
+                status.innerHTML = `<p style="color:red">Extension not detected. Error: ${chrome.runtime.lastError.message}</p>`;
+              } else if (response) {
+                addDebugEntry(`Response received from extension: ${JSON.stringify(response)}`);
+                status.innerHTML = '<p style="color:green">Extension detected and responding!</p>';
+              } else {
+                addDebugEntry('No response from extension');
+                status.innerHTML = '<p style="color:orange">Extension detected but not responding.</p>';
+              }
+            });
+          } catch (err) {
+            addDebugEntry(`Error communicating with extension: ${err.message}`);
+            status.innerHTML = `<p style="color:red">Error communicating with extension: ${err.message}</p>`;
+          }
+        } else {
+          addDebugEntry('Chrome extension API not detected');
+          status.innerHTML = '<p style="color:red">Chrome extension API not detected. Are you using this in a regular webpage?</p>';
+        }
+      } catch (err) {
+        addDebugEntry(`General error: ${err.message}`);
+        status.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html> 

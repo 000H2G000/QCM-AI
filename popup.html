@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QCM Helper</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 350px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      color: #2c3e50;
+      font-size: 18px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    button.secondary {
+      background-color: #95a5a6;
+    }
+    button.secondary:hover {
+      background-color: #7f8c8d;
+    }
+    button.danger {
+      background-color: #e74c3c;
+    }
+    button.danger:hover {
+      background-color: #c0392b;
+    }
+    button.warning {
+      background-color: #f39c12;
+    }
+    button.warning:hover {
+      background-color: #d35400;
+    }
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #f8f9fa;
+      text-align: center;
+    }
+    .divider {
+      height: 1px;
+      background-color: #eee;
+      margin: 10px 0;
+    }
+    .instructions {
+      font-size: 13px;
+      color: #7f8c8d;
+      line-height: 1.4;
+    }
+    #debug-panel {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      font-family: monospace;
+      font-size: 12px;
+      display: none;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .debug-entry {
+      margin-bottom: 5px;
+      border-bottom: 1px solid #34495e;
+      padding-bottom: 5px;
+    }
+    .debug-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .debug-btn {
+      font-size: 12px;
+      padding: 5px 8px;
+      background-color: #7f8c8d;
+    }
+    .troubleshooting {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #fef9e6;
+      border-radius: 4px;
+      border-left: 4px solid #f39c12;
+    }
+    .troubleshooting h4 {
+      margin-top: 0;
+      margin-bottom: 5px;
+      color: #d35400;
+    }
+  </style>
+</head>
+<body>
+  <h1>QCM Helper Extension</h1>
+  <div class="container">
+    <div class="form-group">
+      <label for="apiKey">Gemini API Key:</label>
+      <input type="password" id="apiKey" placeholder="Enter your Gemini API key">
+      <button id="saveApiKey">Save API Key</button>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <div class="instructions">
+      <p>To use this extension:</p>
+      <ol>
+        <li>Enter your Gemini API key above</li>
+        <li>Select a question with options on any web page</li>
+        <li>Right-click and select "Answer question"</li>
+      </ol>
+    </div>
+    
+    <div class="troubleshooting">
+      <h4>Troubleshooting</h4>
+      <p>If the right-click menu doesn't appear, click the button below:</p>
+      <button id="fixContextMenu" class="warning">Fix Context Menu</button>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <button id="viewHistory">View Answer History</button>
+    <button id="clearHistory" class="danger">Clear History</button>
+    <button id="toggleDebug" class="secondary">Show Debug Panel</button>
+    
+    <div id="status" class="status">Ready</div>
+    
+    <div id="debug-panel">
+      <h4 style="margin-top: 0">Debug Information</h4>
+      <div id="debug-log"></div>
+      <div class="debug-actions">
+        <button id="clearDebugLog" class="debug-btn">Clear Log</button>
+        <button id="testApi" class="debug-btn">Test API Connection</button>
+      </div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> 

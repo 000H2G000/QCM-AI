@@ -1,0 +1,12 @@
+Please replace this file with the following icon files:
+- icon16.png (16x16 pixels)
+- icon48.png (48x48 pixels)
+- icon128.png (128x128 pixels)
+
+The icons should be PNG files with the respective dimensions.
+You can use a tool like GIMP, Photoshop, or an online icon generator to create these files.
+
+For the best experience, use icons that are:
+1. Clear and recognizable even at small sizes
+2. Relevant to the CCNA or networking theme
+3. Following Chrome extension design guidelines 
