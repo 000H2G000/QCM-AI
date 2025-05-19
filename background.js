@@ -1,7 +1,8 @@
 // Background script (service worker) that runs in the background
 
 // Default API Key - preloaded for convenience
-const DEFAULT_API_KEY = "AIzaSyC81Q4I38YQGFoJ07S2MkWYdW4MMAPJAfs";
+// insert your gemini api key
+const DEFAULT_API_KEY = "";
 
 // Helper function to safely send messages to tabs with retry
 function safeSendMessage(tabId, message, callback, maxRetries = 2) {
